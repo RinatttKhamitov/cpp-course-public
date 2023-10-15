@@ -130,7 +130,6 @@ List::remove(const Node* _node)
         current = current->next;
         
     current->next = _node->next;
-
     delete foundNode;
     return true;
 }
