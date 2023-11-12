@@ -5,79 +5,106 @@ template <class T>
 class Vector
 {
 public: 
-    static const size_t reserve_miltiply_ = 2;
+    static const size_t reserve_miltiply_ = 2; 
     static const size_t empty_vector_size_ = 8;
 public:
     using iterator = Iterator<T>;
-    using value_type = /* ? */;
-    using pointer = /* ? */;
-    using reference = /* ? */;
-    using size_type = /* ? */;
+    using value_type = T;
+    using pointer = T*; 
+    using reference = value_type&;
+    using size_type = size_t; // 
 
     Vector()
     {
-        throw std::runtime_error("not implemented");
+        data_ = new value_type[empty_vector_size_];
+        size_ = 0;
+        capacity_ = empty_vector_size_;
     }
 
     ~Vector()
     {
-        throw std::runtime_error("not implemented");
+        delete[] data_;
+        size_ = 0;
+        capacity_ = 0;
     }
 
     reference operator[] (size_type n) {
-        throw std::runtime_error("not implemented");
+        return data_[n];
     }
 
     const reference operator[] (size_type n) const {
-        throw std::runtime_error("not implemented");
+        return data_[n];
     }
 
     void push_back(const T & value) {
-        throw std::runtime_error("not implemented");
+        data_[size_] = std::move(value);
+        size_++;   
     }
 
     void push_back(T && value) {
-        throw std::runtime_error("not implemented");
+        data_[size_] = std::move(value);
+        size_++;   
     }
 
     void pop_back() {
-        throw std::runtime_error("not implemented");
+        size_--;
+        data_[size_] = T();
     }
 
     void clear() {
-        throw std::runtime_error("not implemented");
+        size_ = 0;
     }
 
     void reserve(size_type new_size) {
-        throw std::runtime_error("not implemented");
+        if (new_size > capacity_){
+            pointer newData = new value_type[new_size];
+            for(int i = 0; i < size_; i++){
+                newData[i] = std::move(data_[i]);
+            }
+            delete[] data_;
+            data_ = newData;
+            capacity_ = new_size;
+        }
     }
 
     void resize(size_type new_size) {
-        throw std::runtime_error("not implemented");
+        if (new_size == size_){
+            return;
+        }
+        if (new_size > size_){
+            reserve(new_size);
+            for(int i = size_; i < new_size; i++){
+                data_[i] = T();
+            }
+            size_ = new_size;
+        }
     }
 
     iterator begin() const noexcept {
-        throw std::runtime_error("not implemented");
+        return iterator(data_);
     }
 
     iterator end() const noexcept {
-        throw std::runtime_error("not implemented");
+        return iterator(data_+size_);
     }
 
     size_type size() const noexcept {
-        throw std::runtime_error("not implemented");
+        return size_;
     }
-
     size_type capacity() const noexcept {
-        throw std::runtime_error("not implemented");
+        return capacity_;
     }
 
     bool empty() const noexcept {
-        throw std::runtime_error("not implemented");
+        if (size_ == 0)
+            return true;
+        return false;
     }
 
 private:
     pointer data_;
     size_type size_;
-    size_type capacity_;
+    size_type capacity_; /*  capacity возвращает 
+    количество элементов, которые могут храниться в 
+    выделенной в данный момент памяти  */
 };

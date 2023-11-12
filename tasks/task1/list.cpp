@@ -59,7 +59,7 @@ Node*
 List::find(int _val)
 {
     if (is_empty()){
-        return;
+        return nullptr;
     }
     Node* current = first;
     while (current != nullptr){

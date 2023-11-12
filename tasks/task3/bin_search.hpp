@@ -1,5 +1,23 @@
 #pragma once
 
 int* LowerBound(int* first, int* last, int value) {
-	throw std::runtime_error("not implemented error");
+	int* it = first;
+	int len = last-first;
+	int step = len;
+
+	while (len > 0)
+    { 
+        step = len / 2; 
+        it = first+step;
+ 
+        if (*it < value)
+        {
+            first = ++it; 
+            len -= step + 1; 
+        }
+        else
+            len = step;
+    }
+ 
+    return first;
 }
