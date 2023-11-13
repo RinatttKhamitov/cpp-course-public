@@ -29,20 +29,58 @@ namespace {
     constexpr char end_command_delimiter{'?'};
 }
 
+auto Split(const std::string& str, char delimiter) -> std::vector<std::string> 
+{
+    std::vector<std::string> result;
+    std::string token;
+    std::size_t start = 0;
+    std::size_t end = str.find(delimiter);
 
-class FileReader {
+    while (end != std::string::npos) {
+        token = str.substr(start, end - start);
+        result.push_back(token);
+        start = end + 1;
+        end = str.find(delimiter, start);
+    }
 
-};
+    token = str.substr(start, end);
+    result.push_back(token);
 
-class FileWriter {
-
-};
-
+    return result;
+}
 class KeyValueDB {
-
+    protected : std::string key;
+    protected : std::string value;
+    public : KeyValueDB(std::string key_, std::string value_){
+        key = key_;
+        value = value_;
+    }
 };
 
 class KeyValueManager : public KeyValueDB {
+    public : KeyValueManager(std::string key_, std::string value_) : KeyValueDB(key_, value_) {} ;
+
+};
+class FileReader {
+    public : std::vector<KeyValueManager> GetFileReader(std::string fileName){
+        std::vector<KeyValueManager> vectordb;
+        std::string line;
+ 
+        std::ifstream in(fileName); // окрываем файл для чтения
+        if (in.is_open())
+        {
+            while (std::getline(in, line))
+            {
+                std::vector splitLine = Split(line, ' ');
+                std::cout << splitLine[1] << " " << splitLine[1] << std::endl;
+                vectordb.push_back(KeyValueManager(splitLine[0], splitLine[1]));
+            }
+        }
+        in.close();     // закрываем файл
+        return vectordb;
+    }
+};
+class FileWriter {
 
 };
 
@@ -52,6 +90,7 @@ class ArgumentsParser {
 
 int main(int argc, char** argv)
 {
+    FileReader().GetFileReader("db.txt");
     // auto db = KeyValueManager("db.txt");
     // auto ap = ArgumentsParser(argc, argv);
     
