@@ -29,24 +29,39 @@ public:
     }
 
     reference operator[] (size_type n) {
+        if (n >= size_)
+            throw std::out_of_range("Index out of range");
+
         return data_[n];
     }
 
     const reference operator[] (size_type n) const {
+        if (n >= size_)
+            throw std::out_of_range("Index out of range");
+
         return data_[n];
     }
 
     void push_back(const T & value) {
-        data_[size_] = std::move(value);
+        if(size_ == capacity_){
+            reserve(capacity_ * reserve_miltiply_);
+        }
+        data_[size_] = value;
         size_++;   
     }
 
     void push_back(T && value) {
+        if(size_ == capacity_){
+            reserve(capacity_ * reserve_miltiply_);
+        }
         data_[size_] = std::move(value);
         size_++;   
     }
 
     void pop_back() {
+        if (size_ <= 0)
+            throw std::out_of_range("out of range");
+
         size_--;
         data_[size_] = T();
     }
