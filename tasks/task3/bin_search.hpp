@@ -1,7 +1,7 @@
 #pragma once
 
-int* LowerBound(int* first, int* last, int value) {
-	int* it = first;
+int* LowerBound(int* first, int* last, int value) { 
+	int* it = first; 
 	int len = last-first;
 	int step = len;
 
@@ -18,6 +18,8 @@ int* LowerBound(int* first, int* last, int value) {
         else
             len = step;
     }
- 
+	if (value != *first){
+		return last;
+	}
     return first;
 }
