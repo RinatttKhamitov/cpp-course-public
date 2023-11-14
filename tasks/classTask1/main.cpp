@@ -25,6 +25,7 @@
 #include <sstream>
 #include <map>
 
+class FileReader;
 namespace {
     constexpr char end_command_delimiter{'?'};
 }
@@ -48,22 +49,12 @@ auto Split(const std::string& str, char delimiter) -> std::vector<std::string>
 
     return result;
 }
-class KeyValueDB {
-    protected : std::string key;
-    protected : std::string value;
-    public : KeyValueDB(std::string key_, std::string value_){
-        key = key_;
-        value = value_;
-    }
-};
-
-class KeyValueManager : public KeyValueDB {
-    public : KeyValueManager(std::string key_, std::string value_) : KeyValueDB(key_, value_) {} ;
-
-};
 class FileReader {
-    public : std::vector<KeyValueManager> GetFileReader(std::string fileName){
-        std::vector<KeyValueManager> vectordb;
+    public : FileReader(){
+
+    }
+    public : std::map<std::string, std::string> GetFileReader(std::string fileName){
+        std::map<std::string, std::string> mapDb;
         std::string line;
  
         std::ifstream in(fileName); // окрываем файл для чтения
@@ -72,12 +63,45 @@ class FileReader {
             while (std::getline(in, line))
             {
                 std::vector splitLine = Split(line, ' ');
-                std::cout << splitLine[1] << " " << splitLine[1] << std::endl;
-                vectordb.push_back(KeyValueManager(splitLine[0], splitLine[1]));
+                mapDb[splitLine[0]] = splitLine[1];
             }
         }
         in.close();     // закрываем файл
-        return vectordb;
+        return mapDb;
+    }
+};
+class KeyValueDB {
+    protected : std::map<std::string, std::string> keyValue;
+};
+class KeyValueManager : public KeyValueDB {
+    public : KeyValueManager(std::string fileName){
+        keyValue = FileReader().GetFileReader(fileName);
+    }
+    void InsertKeyValue(std::string key_, std::string value_){
+        keyValue[key_] = value_;
+    }
+    void DeleteKey(std::string key_){
+        if (keyValue.count(key_))
+        {
+            keyValue.erase(key_);
+        }
+    }
+    void FindKey(std::string key_){
+        if (keyValue.count(key_))
+        {
+            std::cout << "FOUND: " << keyValue[key_] << std::endl;
+        }
+        else
+        {
+            std::cout << "NOT FOUND" << std::endl;
+        }
+    }
+    void PrintKeyValue(){
+        for (const auto& [key, value] : keyValue)
+            std::cout << key << "\t" << value << std::endl;
+    }
+    void DropAll(){
+        keyValue.clear();
     }
 };
 class FileWriter {
@@ -90,8 +114,10 @@ class ArgumentsParser {
 
 int main(int argc, char** argv)
 {
-    FileReader().GetFileReader("db.txt");
-    // auto db = KeyValueManager("db.txt");
+
+    auto db = KeyValueManager("db.txt");
+    db.PrintKeyValue();
+    db.DropAll();
     // auto ap = ArgumentsParser(argc, argv);
     
     // // return false if no more commands
