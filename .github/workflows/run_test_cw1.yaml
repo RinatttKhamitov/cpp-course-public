@@ -5,10 +5,12 @@ on:
     paths:
      - ".github/workflows/run_test_cw1.yaml"
      - "tasks/classTask1/main.cpp"
+     - "tasks/classTask1/tests.py"
   pull_request:
     paths:
      - ".github/workflows/run_test_cw1.yaml"
      - "tasks/classTask1/main.cpp"
+     - "tasks/classTask1/tests.py"
 
 
 env:
