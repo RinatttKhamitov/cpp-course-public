@@ -16,7 +16,7 @@ void value_should_be_deleted_in_this_function(T p_value)
     if constexpr (std::is_pointer<T>::value) {
         // что нужно сделать тут, если тип T - сырой указатель
     } else {
-        // что нужно сделать тут, если тип T - умный указатель указательz
+        // что нужно сделать тут, если тип T - умный указатель указатель
         assert(!p_value);
     }
 }
