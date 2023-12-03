@@ -26,8 +26,109 @@
 #include <algorithm>
 
 
-int main() {
-    // ваше решение
+void Print(std::vector<std::string> line, int countLine){
+    std::vector<std::string> duplicates;
 
+    std::map<std::string, int> wordCount;
+
+    for (const auto& element : line) {
+        if (wordCount.count(element) > 0) {
+            if (wordCount[element] == 1) {
+                duplicates.push_back(element);
+            }
+            wordCount[element]++;
+        } else {
+            wordCount[element] = 1;
+        }
+    }
+
+    // Output the duplicate elements
+    std::cout << countLine << ":";
+    for (int i = 0; i < duplicates.size(); i ++){
+        if (duplicates[i] == ""){
+            continue;
+        }
+        if (i == duplicates.size() - 1){
+            std::cout << duplicates[i];
+            break;
+        }
+        std::cout << duplicates[i] << ",";
+    }
+    std::cout << "\\n" << std::endl;
+}
+auto Split(const std::string& str, char delimiter) -> std::vector<std::string> 
+{
+    std::vector<std::string> result;
+    std::string token;
+    std::size_t start = 0;
+    std::size_t end = str.find(delimiter);
+
+    while (end != std::string::npos) {
+        token = str.substr(start, end - start);
+        result.push_back(token);
+        start = end + 1;
+        end = str.find(delimiter, start);
+    }
+
+    token = str.substr(start, end);
+    result.push_back(token);
+
+    return result;
+}
+
+std::vector<std::string> processString(const std::string& str) {
+    std::vector<std::string> words;
+    std::string word;
+    
+    for (char c : str) {
+        if ((std::isalpha(c) || c == '\\' || c == '\'') && c != '.' && c != ',' && c != '!' && c != '?') {
+            word += std::tolower(c);
+        }
+        if (c == ' ') {
+            words.push_back(word);
+            word.clear();
+        }
+    }
+    
+    if (!word.empty()) {
+        words.push_back(word);
+    }
+    
+    return words;
+}
+
+int main() {
+    std::string line;
+    std::string allLine;
+    std::ifstream file("input.txt");
+    int count = 0;
+
+    if (file.is_open()) {
+        while (std::getline(file, line)) {
+            if (line == ""){
+                continue;
+            }
+            if (line[line.length() - 1] != '.'){
+                allLine += " " + line;
+                continue;
+            }
+            else{
+                if (allLine != ""){
+                    allLine +=  " " + line;
+                    // ...
+                }
+                else{
+                    allLine = line;
+                }
+            }
+            std::vector<std::string> splitedLine = processString(allLine);
+        
+            Print(splitedLine, count);
+            count += 1;
+            allLine = "";
+        }
+        
+        file.close();
+    }
     return 0;
 }
