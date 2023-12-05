@@ -41,8 +41,6 @@ void Print(std::vector<std::string> line, int countLine){
             wordCount[element] = 1;
         }
     }
-
-    // Output the duplicate elements
     std::cout << countLine << ":";
     for (int i = 0; i < duplicates.size(); i ++){
         if (duplicates[i] == ""){
