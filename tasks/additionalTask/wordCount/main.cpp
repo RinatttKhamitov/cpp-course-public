@@ -41,6 +41,9 @@ void Print(std::vector<std::string> line, int countLine){
             wordCount[element] = 1;
         }
     }
+    if (duplicates.size() == 0){
+        return;
+    }
     std::cout << countLine << ":";
     for (int i = 0; i < duplicates.size(); i ++){
         if (duplicates[i] == ""){
@@ -54,79 +57,51 @@ void Print(std::vector<std::string> line, int countLine){
     }
     std::cout << "\\n" << std::endl;
 }
-auto Split(const std::string& str, char delimiter) -> std::vector<std::string> 
-{
-    std::vector<std::string> result;
-    std::string token;
-    std::size_t start = 0;
-    std::size_t end = str.find(delimiter);
 
-    while (end != std::string::npos) {
-        token = str.substr(start, end - start);
-        result.push_back(token);
-        start = end + 1;
-        end = str.find(delimiter, start);
-    }
-
-    token = str.substr(start, end);
-    result.push_back(token);
-
-    return result;
-}
-
-std::vector<std::string> processString(const std::string& str) {
+std::vector<std::string> Split(const std::string& str, char delimiter) {
     std::vector<std::string> words;
+    std::stringstream ss(str);
     std::string word;
     
-    for (char c : str) {
-        if ((std::isalpha(c) || c == '\\' || c == '\'') && c != '.' && c != ',' && c != '!' && c != '?') {
-            word += std::tolower(c);
-        }
-        if (c == ' ') {
-            words.push_back(word);
-            word.clear();
-        }
-    }
-    
-    if (!word.empty()) {
+    while (std::getline(ss, word, delimiter)) {
+        // Удалить запятые из слова.
+        word.erase(std::remove(word.begin(), word.end(), ','), word.end());
+        word.erase(std::remove(word.begin(), word.end(), '\n'), word.end());
+        // Преобразовать слово в нижний регистр.
+        std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+        
         words.push_back(word);
     }
     
     return words;
 }
-
-int main() {
-    std::string line;
-    std::string allLine;
-    std::ifstream file("input.txt");
-    int count = 0;
-
+std::vector<std::string> readSentencesFromFile(const std::string& filename) {
+    std::vector<std::string> sentences;
+    std::ifstream file(filename);
+    
     if (file.is_open()) {
-        while (std::getline(file, line)) {
-            if (line == ""){
-                continue;
-            }
-            if (line[line.length() - 1] != '.'){
-                allLine += " " + line;
-                continue;
-            }
-            else{
-                if (allLine != ""){
-                    allLine +=  " " + line;
-                    // ...
-                }
-                else{
-                    allLine = line;
-                }
-            }
-            std::vector<std::string> splitedLine = processString(allLine);
+        std::string line;
         
-            Print(splitedLine, count);
-            count += 1;
-            allLine = "";
+        while (std::getline(file, line, '.')) {
+
+            sentences.push_back(line);
         }
         
         file.close();
+    } else {
+        std::cout << "Не удалось открыть файл." << std::endl;
+    }
+    
+    return sentences;
+}
+
+int main() {
+    std::vector<std::string> sentences = readSentencesFromFile("input.txt");
+    for (int i = 0; i <= sentences.size(); i++){
+        if (sentences[i].compare("\n") == 0){
+            continue;
+        }
+        Print(Split(sentences[i], ' '), i);
     }
     return 0;
 }
